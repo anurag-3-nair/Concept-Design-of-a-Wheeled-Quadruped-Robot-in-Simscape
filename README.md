@@ -16,5 +16,3 @@ This is the repository for the Software Lab project in 2025
 
 ## **Robot Visualization**
 ![](Images/Screenshots/sm_qp08_crawl_4legs_soln_mechExp.png)
-
-I am now working in the dummy branch
