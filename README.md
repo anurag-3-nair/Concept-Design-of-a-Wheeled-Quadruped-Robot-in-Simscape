@@ -1,9 +1,11 @@
 # **Wheeled Quadruped Robot Concept Design in Simscape&trade;**
 This is the repository for the Software Lab project in 2025
+Project Goals to be updated!
 
 ## **Engineers**
-1. <participant 1>
-1. <participant 2>
+1. Jiang hongyu
+2. Anurag R Nair
+3. Nikil Magesh
 
 ## **Coaches**
 1. Andreas Apostolatos
@@ -17,4 +19,3 @@ This is the repository for the Software Lab project in 2025
 ## **Robot Visualization**
 ![](Images/Screenshots/sm_qp08_crawl_4legs_soln_mechExp.png)
 
-Anurag is trying out git but facing issues so a trial change done
