@@ -13,8 +13,8 @@ Project Goals to be updated!
 1. Steve Miller
 
 ## **Goals For Project**
-1. <goal 1>
-1. <goal 2>
+1. To develop a design for a Wheeled Quadruped Rescue Robot
+2. Should be able to have a payload capacity and be able to carry deliverables in hard to reach areas
 
 ## **Robot Visualization**
 ![](Images/Screenshots/sm_qp08_crawl_4legs_soln_mechExp.png)
