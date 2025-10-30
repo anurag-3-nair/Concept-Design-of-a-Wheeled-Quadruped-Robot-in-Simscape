@@ -117,7 +117,7 @@ plot(t, hip_FR*180/pi, 'r-', t, knee_FR*180/pi, 'b-', 'LineWidth', 2);
 title('Front Right Leg - Hip vs Knee'); ylabel('Angle [°]'); xlabel('Time [s]');
 legend('Hip', 'Knee'); grid on;
 
-disp('🚀 WALKING GAIT GENERATED - TROT PATTERN');
+disp(' WALKING GAIT GENERATED - TROT PATTERN');
 disp('   - Dynamic walking might be more stable than static standing');
 disp('   - Diagonal leg pairs move together');
 disp('   - Knees lift during swing phase');
