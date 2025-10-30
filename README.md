@@ -3,7 +3,7 @@ This is the repository for the Software Lab project in 2025
 Project Goals to be updated!
 
 ## **Engineers**
-1. Jiang hongyu
+1. Jiang Hongyu
 2. Anurag R Nair
 3. Nikil Magesh
 
