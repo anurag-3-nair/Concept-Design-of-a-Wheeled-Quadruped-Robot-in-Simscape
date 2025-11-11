@@ -6,8 +6,10 @@ close all; clc;
 % 2. Converting lat/lon --> Universal Transverse Mercator [UTM] (measurements for path planning)
 % 3. Elevation in meters
 
-% reading the  .hgt file with the map for Munich and Alps area
-[A,R] = readgeoraster("N47E011.hgt");
+% reading the  .hgt file with the map for Munich and Alps area (two options
+% below)
+[A,R] = readgeoraster("N48E011.hgt");
+%[A,R] = readgeoraster("N47E011.hgt");
 A = double(A);
 
 % grids (lat, lon)
