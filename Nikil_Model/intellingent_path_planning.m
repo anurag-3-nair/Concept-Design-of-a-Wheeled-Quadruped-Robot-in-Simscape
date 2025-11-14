@@ -38,7 +38,6 @@ for attempt = 1:maxAttempts
     % Update PRM with new random nodes
     update(prm);
     
-    % Find path
     path = findpath(prm, start, goal);
     
     if ~isempty(path)
