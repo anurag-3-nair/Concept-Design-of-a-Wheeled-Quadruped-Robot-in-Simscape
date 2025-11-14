@@ -1,10 +1,16 @@
-function n_index = node_index(OPEN,xval,yval)
-    %This function returns the index of the location of a node in the list
-    %OPEN
+function n_index = node_index(OPEN, xval, yval)
 
-    i=1;
-    while(OPEN(i,2) ~= xval || OPEN(i,3) ~= yval )
-        i=i+1;
+    % this function returns the index of the location of a node in the list
+    if isempty(OPEN)
+        n_index = -1;
+        return;
     end
-    n_index=i;
+
+    idx = find(OPEN(:, 2) == xval & OPEN(:, 3) == yval, 1);
+
+    if isempty(idx)
+        n_index = -1;
+    else
+        n_index = idx;
+    end
 end
