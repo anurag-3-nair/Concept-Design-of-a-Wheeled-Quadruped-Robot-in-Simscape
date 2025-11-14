@@ -1,6 +1,6 @@
 % init_waypoints.m
 % choose the path：1=straight, 2="S" Shape, 3=Circle
-path_type = 2;   % Change it by yourself
+path_type = 1;   % Change it by yourself
 
 switch path_type
     case 1  % straight
