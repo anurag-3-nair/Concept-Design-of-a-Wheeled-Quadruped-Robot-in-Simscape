@@ -5,27 +5,44 @@ MAX_X=100;
 MAX_Y=100;
 MAP=2 * (ones(MAX_X, MAX_Y));
 
+% TOGGLE: true = random obstacle generation, false = fixed map
+useRandomObstacles = false;
+
 % synthetic obstacles
 numRects = 6; % rectangles
 numCircs = 6; % circles
 [X, Y] = meshgrid(1:MAX_Y, 1:MAX_X);
 BW = false(size(X));
 
-% randomising the obstacles
-% rectangles
-for i = 1:numRects
-    x1 = randi([5, MAX_X-25]);
-    y1 = randi([5, MAX_Y-25]);
-    w = randi([8, 20]);
-    h = randi([8, 20]);
-    BW(Y > y1 & Y < y1+h & X > x1 & X < x1+w) = true;
-end
-% circles
-for i = 1:numCircs
-    cx = randi([10, MAX_X-10]);
-    cy = randi([10, MAX_Y-10]);
-    r = randi([5, 12]);
-    BW((X-cx).^2 + (Y-cy).^2 < r^2) = true;
+if useRandomObstacles == true
+    % random obstacle placement
+    % rectangles
+    for i = 1:numRects
+        x1 = randi([5, MAX_X-25]);
+        y1 = randi([5, MAX_Y-25]);
+        w = randi([8, 20]);
+        h = randi([8, 20]);
+        BW(Y > y1 & Y < y1+h & X > x1 & X < x1+w) = true;
+    end
+    % circles
+    for i = 1:numCircs
+        cx = randi([10, MAX_X-10]);
+        cy = randi([10, MAX_Y-10]);
+        r = randi([5, 12]);
+        BW((X-cx).^2 + (Y-cy).^2 < r^2) = true;
+    end
+
+% fixed map
+else
+    % rectangles
+    BW(Y>20 & Y<35 & X>15 & X<45) = true;
+    BW(Y>55 & Y<75 & X>30 & X<55) = true;
+    BW(Y>20 & Y<40 & X>65 & X<85) = true;
+
+    % circles
+    BW((X-30).^2 + (Y-75).^2 < 12^2) = true;
+    BW((X-70).^2 + (Y-60).^2 < 10^2) = true;
+    BW((X-50).^2 + (Y-25).^2 < 10^2) = true;    
 end
 
 % defining a start and a goal
