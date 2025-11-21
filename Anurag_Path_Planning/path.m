@@ -1,6 +1,6 @@
 clear; clc; close all;
-
 scale = 3;
+
 % parameters
 MAX_X=round(100*scale);
 MAX_Y=round(100*scale);
@@ -25,6 +25,7 @@ if useRandomObstacles == true
         h = round(randi([8, 20])*scale);
         BW(Y > y1 & Y < y1+h & X > x1 & X < x1+w) = true;
     end
+
     % circles
     for i = 1:numCircs
         cx = round(randi([10, 100-10])*scale);
@@ -36,14 +37,9 @@ if useRandomObstacles == true
 % fixed map
 else
     % rectangles
-    BW(Y > round(20*scale) & Y < round(35*scale) & ...
-       X > round(15*scale) & X < round(45*scale)) = true;
-
-    BW(Y > round(55*scale) & Y < round(75*scale) & ...
-       X > round(30*scale) & X < round(55*scale)) = true;
-
-    BW(Y > round(20*scale) & Y < round(40*scale) & ...
-       X > round(65*scale) & X < round(85*scale)) = true;
+    BW(Y > round(20*scale) & Y < round(35*scale) & X > round(15*scale) & X < round(45*scale)) = true;
+    BW(Y > round(55*scale) & Y < round(75*scale) & X > round(30*scale) & X < round(55*scale)) = true;
+    BW(Y > round(20*scale) & Y < round(40*scale) & X > round(65*scale) & X < round(85*scale)) = true;
 
     % circles
     BW((X-round(30*scale)).^2 + (Y-round(75*scale)).^2 < (round(12*scale))^2) = true;
@@ -57,8 +53,10 @@ yStart = round(5  * scale);
 xTarget = round(95 * scale);
 yTarget = round(95 * scale);
 
-% obstacles
+% robot footprint
 robot_radius = 1;
+
+% obstacles
 se = strel('disk', robot_radius);
 map_inflated = imdilate(BW, se);
 
@@ -80,7 +78,6 @@ axis on; grid on;
 
 plot(yStart, xStart, 'bo', 'MarkerSize', 8, 'LineWidth', 2);
 text(yStart+2, xStart, 'Start', 'Color', 'blue');
-
 plot(yTarget, xTarget, 'gd', 'MarkerSize', 8, 'LineWidth', 2);
 text(yTarget+2, xTarget, 'Target', 'Color', 'green');
 
@@ -202,8 +199,8 @@ if (xNode == xTarget && yNode == yTarget)
     i = i + 1;
     
     % Traverse OPEN and determine the parent nodes
-    parent_x = OPEN(node_index(OPEN,xval,yval),4); % parent row index
-    parent_y = OPEN(node_index(OPEN,xval,yval),5); % parent col index
+    parent_x = OPEN(node_index(OPEN,xval,yval),4); % row index
+    parent_y = OPEN(node_index(OPEN,xval,yval),5); % col index
    
     while (parent_x ~= xStart || parent_y ~= yStart)
         Optimal_path(i,1) = parent_x;
@@ -219,10 +216,10 @@ if (xNode == xTarget && yNode == yTarget)
     Optimal_path(i,1) = xStart;
     Optimal_path(i,2) = yStart;
 
-    % now Optimal_path is [Goal ... Start]，reverse Start → Goal
+    % now Optimal_path is [Goal ... Start]，reverse Start --> Goal
     Optimal_path = flipud(Optimal_path);
 
-    % ------------ check the path ------------
+    % check the path 
     j = size(Optimal_path,1);
     path_valid = true;
     for idx = 1:j
@@ -237,29 +234,23 @@ if (xNode == xTarget && yNode == yTarget)
         fprintf('Path validation: PASS\n');
     end
 
-    % ------------ generate pure pursuit waypoints ------------
-  
+    % generating pure pursuit waypoints 
     cellSize = 1.0;   
     originX  = 0.0;    
     originY  = 0.0;    
 
     % grid (row,col) = (xGrid,yGrid)
-    % 
-    xWorld = originX + (Optimal_path(:,2) - 0.5) * cellSize; %  x
-    yWorld = originY + (Optimal_path(:,1) - 0.5) * cellSize; %  y
+    xWorld = originX + (Optimal_path(:,2) - 0.5) * cellSize; 
+    yWorld = originY + (Optimal_path(:,1) - 0.5) * cellSize;
     
     % pure pursuit 
     waypoints = [xWorld, yWorld];
 
-
-    % ------------ path drawing animation -----------
-    p = plot(Optimal_path(1,2)+.5, Optimal_path(1,1)+.5, 'bo', ...
-             'MarkerSize', 8, 'LineWidth', 2);
+    % path drawing animation 
+    p = plot(Optimal_path(1,2)+.5, Optimal_path(1,1)+.5, 'bo', 'MarkerSize', 8, 'LineWidth', 2);
     
     for idx = 2:j
-        pause(0.05);
-        set(p, 'XData', Optimal_path(idx,2)+.5, ...
-               'YData', Optimal_path(idx,1)+.5);
+        set(p, 'XData', Optimal_path(idx,2)+.5,'YData', Optimal_path(idx,1)+.5);
         drawnow;
     end
 
