@@ -2,9 +2,9 @@ clear; clc; close all;
 scale = 3;
 
 % parameters
-MAX_X=round(100*scale);
-MAX_Y=round(100*scale);
-MAP=2 * (ones(MAX_X, MAX_Y));
+MAX_X = round(100*scale);
+MAX_Y = round(100*scale);
+MAP = 2*(ones(MAX_X, MAX_Y));
 
 % TOGGLE: true = random obstacle generation, false = fixed map
 useRandomObstacles = false;
@@ -256,9 +256,10 @@ if (xNode == xTarget && yNode == yTarget)
 
     plot(Optimal_path(:,2)+.5, Optimal_path(:,1)+.5, 'c-', 'LineWidth', 2.5);
     title("Synthetic Obstacle Map - Path Found");
-    
 else
     pause(1);
     h = msgbox('Sorry, No path exists to the Target!','warn');
     uiwait(h,5);
 end
+
+save('environmentData.mat', 'map_inflated', 'waypoints', 'scale');
