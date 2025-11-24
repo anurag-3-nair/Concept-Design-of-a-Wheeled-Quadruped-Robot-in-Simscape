@@ -45,6 +45,30 @@ else
     BW((X-round(30*scale)).^2 + (Y-round(75*scale)).^2 < (round(12*scale))^2) = true;
     BW((X-round(70*scale)).^2 + (Y-round(60*scale)).^2 < (round(10*scale))^2) = true;
     BW((X-round(50*scale)).^2 + (Y-round(25*scale)).^2 < (round(10*scale))^2) = true; 
+
+    % for the STL file
+    obstacles = {};
+
+    % independent from BW map for clear definition of obstacles
+    % rectangles first
+    rect1 = struct("type","rect", "x", 15*scale, "y", 20*scale, "w", (45-15)*scale, "h", (35-20)*scale );
+    obstacles{end+1} = rect1;
+    
+    rect2 = struct("type","rect", "x", 30*scale, "y", 55*scale, "w", (55-30)*scale, "h", (75-55)*scale );
+    obstacles{end+1} = rect2;
+    
+    rect3 = struct("type","rect", "x", 65*scale, "y", 20*scale, "w", (85-65)*scale, "h", (40-20)*scale );
+    obstacles{end+1} = rect3;
+    
+    % circles (using original definitions) 
+    circle1 = struct("type","circle", "cx", 30*scale, "cy", 75*scale, "r", 12*scale );
+    obstacles{end+1} = circle1;
+    
+    circle2 = struct("type","circle", "cx", 70*scale, "cy", 60*scale, "r", 10*scale );
+    obstacles{end+1} = circle2;
+    
+    circle3 = struct("type","circle", "cx", 50*scale, "cy", 25*scale, "r", 10*scale );
+    obstacles{end+1} = circle3;
 end
 
 % defining a start and a goal
@@ -94,7 +118,7 @@ CLOSED=[];
 maxIterations = 2e5;
 iterationCount = 0;
 
-% adding obstacles are in the closed list
+% adding obstacles in the closed list
 k=1; % dummy counter
 for i = 1:MAX_X
     for j = 1:MAX_Y
@@ -123,7 +147,7 @@ CLOSED(CLOSED_COUNT, 2) = yNode;
 NoPath = 1;
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% START ALGORITHM
+% Start Algorithm
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 while((xNode ~= xTarget || yNode ~= yTarget) && NoPath == 1)
@@ -136,14 +160,14 @@ while((xNode ~= xTarget || yNode ~= yTarget) && NoPath == 1)
         break;
     end
     
-    % UPDATE LIST OPEN WITH THE SUCCESSOR NODES
+    % successor node update in the open list
     for i = 1:exp_count
         flag = 0;
         for j = 1:OPEN_COUNT
             if (exp_array(i,1) == OPEN(j,2) && exp_array(i,2) == OPEN(j,3))
                 OPEN(j,8) = min(OPEN(j,8), exp_array(i,5));
 
-                % updating the parent nodes if we found a better path
+                % updating the parent nodes if better path found
                 if OPEN(j,8) == exp_array(i,5)
                     OPEN(j,4) = xNode;
                     OPEN(j,5) = yNode;
@@ -169,7 +193,7 @@ while((xNode ~= xTarget || yNode ~= yTarget) && NoPath == 1)
         % setting xNode and yNode to the node with minimum fn
         xNode = OPEN(index_min_node, 2);
         yNode = OPEN(index_min_node, 3);
-        path_cost = OPEN(index_min_node, 6); % cost update
+        path_cost = OPEN(index_min_node, 6); 
         
         % moving the nodes to CLOSED list
         CLOSED_COUNT = CLOSED_COUNT + 1;
@@ -193,12 +217,13 @@ if (xNode == xTarget && yNode == yTarget)
     Optimal_path = [];
     xval = CLOSED(i,1);
     yval = CLOSED(i,2);
+    
     i = 1;
     Optimal_path(i,1) = xval;  
     Optimal_path(i,2) = yval;  
     i = i + 1;
     
-    % Traverse OPEN and determine the parent nodes
+    % determining the parent nodes
     parent_x = OPEN(node_index(OPEN,xval,yval),4); % row index
     parent_y = OPEN(node_index(OPEN,xval,yval),5); % col index
    
@@ -262,4 +287,113 @@ else
     uiwait(h,5);
 end
 
-save('environmentData.mat', 'map_inflated', 'waypoints', 'scale');
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% STL GENERATION 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% parameters (in meters)
+floor_thickness = 0.1;   
+cell_size = 1.0;    
+obstacle_heights = [2.0, 2.0];
+
+% STL file name
+stl_file = 'environment.stl';
+
+% writing a triangular facet to STL file
+function write_facet(fid, v1, v2, v3)
+    n = cross(v2 - v1, v3 - v1);
+    n = n ./ max(norm(n), eps);
+    fprintf(fid,' facet normal %f %f %f\n', n(1), n(2), n(3));
+    fprintf(fid,'  outer loop\n');
+    fprintf(fid,'   vertex %f %f %f\n', v1);
+    fprintf(fid,'   vertex %f %f %f\n', v2);
+    fprintf(fid,'   vertex %f %f %f\n', v3);
+    fprintf(fid,'  endloop\n endfacet\n');
+end
+
+% extruding rectangles (as prism) 
+function write_rect_prism(fid, x, y, w, h, height)
+    xb = x;      
+    xt = x + w;
+    yb = y;      
+    yt = y + h;
+    z0 = 0;         % bottom 
+    z1 = height;    % top
+
+    % Define 8 vertices
+    V = [xb yb z0; xt yb z0; xt yt z0; xb yt z0;
+        xb yb z1; xt yb z1; xt yt z1; xb yt z1];
+    
+    % triangle faces
+    F = [                 
+        1 2 3; 1 3 4;     % bottom
+        5 6 7; 5 7 8;     % top
+        1 2 6; 1 6 5;     % sides
+        2 3 7; 2 7 6;
+        3 4 8; 3 8 7;
+        4 1 5; 4 5 8
+    ];
+
+    for i = 1:size(F,1)
+        write_facet(fid, V(F(i,1),:), V(F(i,2),:), V(F(i,3),:));
+    end
+end
+
+% extruding a circular obstacle (as cylinder)
+function write_cylinder(fid, cx, cy, r, height, N)
+    theta = linspace(0, 2*pi, N+1);
+    x = cx + r * cos(theta);
+    y = cy + r * sin(theta);
+    z0 = 0;
+    z1 = height;
+
+    % side walls
+    for i = 1:N
+        v1 = [x(i)   y(i)   z0];
+        v2 = [x(i+1) y(i+1) z0];
+        v3 = [x(i+1) y(i+1) z1];
+        v4 = [x(i)   y(i)   z1];
+
+        write_facet(fid, v1, v2, v3);
+        write_facet(fid, v1, v3, v4);
+    end
+
+    % top cap
+    for i = 1:N
+        c = [cx cy z1];
+        v1 = [x(i)   y(i)   z1];
+        v2 = [x(i+1) y(i+1) z1];
+        write_facet(fid, c, v1, v2);
+    end
+end
+
+% writing the STL file
+fid = fopen(stl_file, 'w');
+fprintf(fid, 'solid environment\n');
+
+% floor plate
+map_width  = size(BW, 2) * cell_size;
+map_height = size(BW, 1) * cell_size;
+
+write_rect_prism(fid, 0, 0, map_width, map_height, floor_thickness);
+
+% obstacles (rectangles & circles)
+for k = 1:length(obstacles)
+    obs = obstacles{k};
+
+    if strcmp(obs.type, 'rect')
+        height = obstacle_heights(randi(2));
+        write_rect_prism(fid, obs.x, obs.y, obs.w, obs.h, height);
+
+    elseif strcmp(obs.type,'circle')
+        height = obstacle_heights(randi(2));
+        write_cylinder(fid, obs.cx, obs.cy, obs.r, height, 40); 
+
+    end
+end
+
+fprintf(fid, 'endsolid environment');
+fclose(fid);
+
+disp("STL saved as environment.stl");
+%save('environmentData.mat', 'map_inflated', 'waypoints', 'scale');
