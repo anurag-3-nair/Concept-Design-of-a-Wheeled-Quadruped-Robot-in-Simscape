@@ -1,9 +1,10 @@
 clear; clc; close all;
+scale = 3;
 
 % parameters
-MAX_X=100;
-MAX_Y=100;
-MAP=2 * (ones(MAX_X, MAX_Y));
+MAX_X = round(100*scale);
+MAX_Y = round(100*scale);
+MAP = 2*(ones(MAX_X, MAX_Y));
 
 % TOGGLE: true = random obstacle generation, false = fixed map
 useRandomObstacles = false;
@@ -18,39 +19,44 @@ if useRandomObstacles == true
     % random obstacle placement
     % rectangles
     for i = 1:numRects
-        x1 = randi([5, MAX_X-25]);
-        y1 = randi([5, MAX_Y-25]);
-        w = randi([8, 20]);
-        h = randi([8, 20]);
+        x1 = round(randi([5, 100-25])*scale);
+        y1 = round(randi([5, 100-25])*scale);
+        w = round(randi([8, 20])*scale);
+        h = round(randi([8, 20])*scale);
         BW(Y > y1 & Y < y1+h & X > x1 & X < x1+w) = true;
     end
+
     % circles
     for i = 1:numCircs
-        cx = randi([10, MAX_X-10]);
-        cy = randi([10, MAX_Y-10]);
-        r = randi([5, 12]);
+        cx = round(randi([10, 100-10])*scale);
+        cy = round(randi([10, 100-10])*scale);
+        r = round(randi([5, 12])*scale);
         BW((X-cx).^2 + (Y-cy).^2 < r^2) = true;
     end
 
 % fixed map
 else
     % rectangles
-    BW(Y>20 & Y<35 & X>15 & X<45) = true;
-    BW(Y>55 & Y<75 & X>30 & X<55) = true;
-    BW(Y>20 & Y<40 & X>65 & X<85) = true;
+    BW(Y > round(20*scale) & Y < round(35*scale) & X > round(15*scale) & X < round(45*scale)) = true;
+    BW(Y > round(55*scale) & Y < round(75*scale) & X > round(30*scale) & X < round(55*scale)) = true;
+    BW(Y > round(20*scale) & Y < round(40*scale) & X > round(65*scale) & X < round(85*scale)) = true;
 
     % circles
-    BW((X-30).^2 + (Y-75).^2 < 12^2) = true;
-    BW((X-70).^2 + (Y-60).^2 < 10^2) = true;
-    BW((X-50).^2 + (Y-25).^2 < 10^2) = true;    
+    BW((X-round(30*scale)).^2 + (Y-round(75*scale)).^2 < (round(12*scale))^2) = true;
+    BW((X-round(70*scale)).^2 + (Y-round(60*scale)).^2 < (round(10*scale))^2) = true;
+    BW((X-round(50*scale)).^2 + (Y-round(25*scale)).^2 < (round(10*scale))^2) = true; 
 end
 
 % defining a start and a goal
-xStart = 5; yStart= 5;
-xTarget = 95; yTarget = 95;
+xStart = round(5  * scale);
+yStart = round(5  * scale);
+xTarget = round(95 * scale);
+yTarget = round(95 * scale);
+
+% robot footprint
+robot_radius = 1;
 
 % obstacles
-robot_radius = 1;
 se = strel('disk', robot_radius);
 map_inflated = imdilate(BW, se);
 
@@ -72,7 +78,6 @@ axis on; grid on;
 
 plot(yStart, xStart, 'bo', 'MarkerSize', 8, 'LineWidth', 2);
 text(yStart+2, xStart, 'Start', 'Color', 'blue');
-
 plot(yTarget, xTarget, 'gd', 'MarkerSize', 8, 'LineWidth', 2);
 text(yTarget+2, xTarget, 'Target', 'Color', 'green');
 
@@ -185,33 +190,42 @@ end
 if (xNode == xTarget && yNode == yTarget)
 
     i = size(CLOSED,1);
-    Optimal_path=[];
+    Optimal_path = [];
     xval = CLOSED(i,1);
     yval = CLOSED(i,2);
     i = 1;
-    Optimal_path(i,1) = xval;
-    Optimal_path(i,2) = yval;
-    i = i+1;
+    Optimal_path(i,1) = xval;  
+    Optimal_path(i,2) = yval;  
+    i = i + 1;
     
-    %Traverse OPEN and determine the parent nodes
-    parent_x = OPEN(node_index(OPEN,xval,yval),4);%node_index returns the index of the node
-    parent_y = OPEN(node_index(OPEN,xval,yval),5);
+    % Traverse OPEN and determine the parent nodes
+    parent_x = OPEN(node_index(OPEN,xval,yval),4); % row index
+    parent_y = OPEN(node_index(OPEN,xval,yval),5); % col index
    
-    while( parent_x ~= xStart || parent_y ~= yStart)
-           Optimal_path(i,1) = parent_x;
-           Optimal_path(i,2) = parent_y;
+    while (parent_x ~= xStart || parent_y ~= yStart)
+        Optimal_path(i,1) = parent_x;
+        Optimal_path(i,2) = parent_y;
 
-           inode = node_index(OPEN,parent_x,parent_y);
-           parent_x = OPEN(inode,4);%node_index returns the index of the node
-           parent_y = OPEN(inode,5);
-           i = i+1;
+        inode    = node_index(OPEN, parent_x, parent_y);
+        parent_x = OPEN(inode,4);
+        parent_y = OPEN(inode,5);
+        i = i + 1;
     end
     
-    j=size(Optimal_path,1);
+    % add Start point
+    Optimal_path(i,1) = xStart;
+    Optimal_path(i,2) = yStart;
+
+    % now Optimal_path is [Goal ... Start]，reverse Start --> Goal
+    Optimal_path = flipud(Optimal_path);
+
+    % check the path 
+    j = size(Optimal_path,1);
     path_valid = true;
     for idx = 1:j
-        if MAP(Optimal_path(idx, 1), Optimal_path(idx,2)) == -1
-            fprintf('WARNING: Path goes through/over obstacle at (%d, %d)!\n', Optimal_path(idx, 1), Optimal_path(idx,2));
+        if MAP(Optimal_path(idx,1), Optimal_path(idx,2)) == -1
+            fprintf('WARNING: Path goes through/over obstacle at (%d, %d)!\n', ...
+                Optimal_path(idx,1), Optimal_path(idx,2));
             path_valid = false;
         end
     end
@@ -220,18 +234,32 @@ if (xNode == xTarget && yNode == yTarget)
         fprintf('Path validation: PASS\n');
     end
 
-    % plot the Optimal Path!
-    p = plot(Optimal_path(j,1)+.5, Optimal_path(j,2)+.5,'bo', 'MarkerSize', 8, 'LineWidth', 2);
-    j = j-1;
+    % generating pure pursuit waypoints 
+    cellSize = 1.0;   
+    originX  = 0.0;    
+    originY  = 0.0;    
 
-    for idx = j:-1:1
-        pause(0.05);
-        set(p, 'XData', Optimal_path(idx,1)+.5, 'YData', Optimal_path(idx,2)+.5);
-        drawnow ;
+    % grid (row,col) = (xGrid,yGrid)
+    xWorld = originX + (Optimal_path(:,2) - 0.5) * cellSize; 
+    yWorld = originY + (Optimal_path(:,1) - 0.5) * cellSize;
+    
+    % pure pursuit 
+    waypoints = [xWorld, yWorld];
+
+    % path drawing animation 
+    p = plot(Optimal_path(1,2)+.5, Optimal_path(1,1)+.5, 'bo', 'MarkerSize', 8, 'LineWidth', 2);
+    
+    for idx = 2:j
+        set(p, 'XData', Optimal_path(idx,2)+.5,'YData', Optimal_path(idx,1)+.5);
+        drawnow;
     end
+
     plot(Optimal_path(:,2)+.5, Optimal_path(:,1)+.5, 'c-', 'LineWidth', 2.5);
+    title("Synthetic Obstacle Map - Path Found");
 else
     pause(1);
-    h=msgbox('Sorry, No path exists to the Target!','warn');
+    h = msgbox('Sorry, No path exists to the Target!','warn');
     uiwait(h,5);
 end
+
+save('environmentData.mat', 'map_inflated', 'waypoints', 'scale');
