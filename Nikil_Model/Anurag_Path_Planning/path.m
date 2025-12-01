@@ -1,5 +1,5 @@
 clear; clc; close all;
-scale = 3;
+scale = 0.5;
 
 % parameters
 MAX_X = round(100*scale);
@@ -396,4 +396,3 @@ fprintf(fid, 'endsolid environment');
 fclose(fid);
 
 disp("STL saved as environment.stl");
-%save('environmentData.mat', 'map_inflated', 'waypoints', 'scale');
