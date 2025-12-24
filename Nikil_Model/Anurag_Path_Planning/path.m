@@ -2,7 +2,7 @@ clear; clc; close all;
 scale = 0.5;
 
 % parameters
-MAX_X = round(100*scale);
+MAX_X = round(100*scale); 
 MAX_Y = round(100*scale);
 MAP = 2*(ones(MAX_X, MAX_Y));
 
