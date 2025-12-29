@@ -23,11 +23,12 @@ Project Goals to be updated!
 While the Pure-Pursuit controller is responsible for tracking a given reference trajectory, it does not generate the trajectory itself. Therefore, a path-planning algorithm is essential for computing an optimal, collision-free path from the starting position to the target within the environment. In this section, an attempt will be made to explain the choice of method for the path planning algorithm, which aids the pure-pursuit algorithm for the robot.
 
 ### **Environment Representation and Map Scaling**
-The environment is represented using a \textbf{two-dimensional occupancy grid}, discretised into uniformly sized square cells. Each square cell represents a region of physical space and is classified as either free or occupied. 
+The environment is represented using a **two-dimensional occupancy grid**, discretised into uniformly sized square cells. Each square cell represents a region of physical space and is classified as either free or occupied. 
 
 In the implementation, a scaling factor is applied as shown below:
-    scale = 3;
 
+    scale = 3;
+    
     % parameters
     MAX_X = round(100*scale)
     MAX_Y = round(100*scale)
