@@ -207,4 +207,4 @@ conflicts with regions with obstacles:
         end
     end
 
-![Path Planning Demo](C:\Software_Lab_Temp\Software_Lab_2025\Nikil_Model\Anurag_Path_Planning\path_planning.gif)
+![Path Planning](C:\Software_Lab_Temp\Software_Lab_2025\path_planning.gif)
