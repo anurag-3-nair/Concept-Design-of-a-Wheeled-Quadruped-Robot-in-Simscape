@@ -207,4 +207,4 @@ conflicts with regions with obstacles:
         end
     end
 
-![Path Planning](C:\Software_Lab_Temp\Software_Lab_2025\path_planning.gif)
+![Path Planning](path_planning.gif)
