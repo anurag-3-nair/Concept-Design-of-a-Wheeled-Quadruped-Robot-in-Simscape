@@ -131,7 +131,7 @@ Preloading obstacles into the closed list prevents them from ever being expanded
         end
     end
 
-The heuristic function is defined as the Euclidean distance to the goal:
+The heuristic function is defined as the Euclidean distance to the goal:\
     $h(n) = \sqrt{(x_n - x_{goal})^2 + (y_n - y_{goal})^2}$
 
 This setup is illustrated in the \textbf{A* Data Structure Setup} block of 
