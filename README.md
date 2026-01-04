@@ -23,8 +23,8 @@ This is the repository for the Software Lab project in 2025!
 5. Mobility
 
 ## **Robot Visualization**
-![](Images/Screenshots/sm_qp08_crawl_4legs_soln_mechExp.png)
-![](C:\Software_Lab_Temp\Software_Lab_2025\Final_Robot_image.png)
+<!-- ![](Images/Screenshots/sm_qp08_crawl_4legs_soln_mechExp.png) -->
+![](Final_Robot_image.png)
 
 ## **Path Planning**
 While the Pure-Pursuit controller is responsible for tracking a given reference 
