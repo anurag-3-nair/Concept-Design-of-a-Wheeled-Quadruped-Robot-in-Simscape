@@ -48,7 +48,7 @@ In the implementation, a scaling factor is applied as shown below:
     MAX_Y = round(100*scale)
 
 This results in a $300 \times 300$ grid, effectively increasing spatial resolution
- while maintaining the same physical layout. Higher resolution improves the 
+while maintaining the same physical layout. Higher resolution improves the 
 smoothness of the path and the definition of obstacles at the cost of increased 
 computational effort. In the map, obstacle regions are defined analytically using 
 geometric primitives such as rectangles and circles, and subsequently rasterized 
@@ -75,11 +75,11 @@ discretized grid map.
 
 #### **Initialisation and Map Setup**
 The algorithm initializes the grid map with predefined dimensions 
-(|MAX_X, MAX_Y|) and assigns semantic values to each cell. Traversable cells 
+**|MAX_X, MAX_Y|** and assigns semantic values to each cell. Traversable cells 
 are initialised with positive cost values, while obstacles are marked as 
 non-traversable with negative cost values. The obstacles are generated randomly 
 or deterministically using analytical rectangle and circle definitions and 
-rasterized into a binary occupancy grid.\
+rasterized into a binary occupancy grid.
 
 Parameter declaration for the map dimensions:
 
@@ -99,7 +99,7 @@ To ensure collision-free motion, considering the robot's physical size,
 obstacle inflation is applied using morphological dilation (*|imdilate|*) 
 with a disk-shaped structuring element corresponding to the robot radius. 
 The start and target positions are explicitly enforced as free cells to 
-guarantee algorithmic validity. \
+guarantee algorithmic validity. 
 
 Obstacle inflation here is forced to respect robot's physical footprint:
 
@@ -153,7 +153,7 @@ path to the goal exists. At each iteration:
 The node with the minimum total cost, $f(n)$, is then selected using the
 **min_fn** function and moved from the **OPEN** list to the **CLOSED** list. 
 This process is selected until the target node is selected or the **OPEN** list
-is completely exhausted.\
+is completely exhausted.
 
 A node's parent is updated only if a lower-cost path is found:
 
@@ -175,7 +175,7 @@ A node's parent is updated only if a lower-cost path is found:
 When the goal node is reached, the algorithm reconstructs the optimal path 
 by backtracking through the stored parent nodes. This process generates an 
 ordered sequence of grid coordinates, starting from the start and ending at 
-the target.\
+the target.
 
 Storing parent pointers during expansion enabling efficient backtracking:
 
@@ -195,7 +195,8 @@ Storing parent pointers during expansion enabling efficient backtracking:
 
 A validation step ensures that no reconstructed path point intersects an 
 obstacle cell. The final path is then visualized over the grid path and 
-converted into waypoints suitable for downstream use by the Pure Pursuit controller.\
+converted into waypoints suitable for downstream use by the Pure Pursuit 
+controller.
 
 An extra step of safety ensured through this validation step to avoid 
 conflicts with regions with obstacles:
@@ -208,3 +209,39 @@ conflicts with regions with obstacles:
     end
 
 ![Path Planning](path_planning.gif)
+
+## **Unit Tests for Path Planning**
+
+In order to validate the capabilities of the A* path planning algorithm, two 
+comprehensive tests were created. (Code is placed in the file titled **test_astar.m**.
+
+### **Test 1: Simple Path (no obstacles)**
+
+This test validates that the A* algorithm can find a path in an environment
+where the optimal path is a near diagonal path while also checking its efficiency. 
+The initial setup looks like:
+
+    MAX_X = 20; MAX_Y = 20;
+    MAP = 2 * ones(MAX_X, MAX_Y);
+    
+    xStart = 2; yStart = 2;
+    xTarget = 18; yTarget = 18;
+    ...
+    if(xNode == xTarget && yNode == yTarget)
+        fprintf('PASS: Path found successfully\n');
+
+### **Test 2: Obstacle Avoidance**
+
+This test validates the A* algorithm's ability to navigate around obstacles
+when the direct path is blocked (by a vertical wall in this case). This 
+feature is also displayed in the main code.
+
+    # create a vertical obstacle
+    BW(Y > 5 & Y < 25 & X > 14 & X < 16) = true;
+
+    # checking for obstacles
+    robot_radius = 1;
+    se = strel('disk', robot_radius);
+    map_inflated = imdilate(BW, se);
+
+## **Limitations of the Path-Planning code**
