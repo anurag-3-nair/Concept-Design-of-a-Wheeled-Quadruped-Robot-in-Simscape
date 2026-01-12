@@ -2,7 +2,7 @@
 This is the repository for the Software Lab project in 2025!
 
 ## **Engineers and Authors**
-1. Jiang Hongyu
+1. Hongyu Jiang
 2. Anurag R Nair
 3. Nikil Magesh
 
