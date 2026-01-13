@@ -24,7 +24,7 @@ This is the repository for the Software Lab project in 2025!
 
 ## **Robot Visualization**
 <!-- ![](Images/Screenshots/sm_qp08_crawl_4legs_soln_mechExp.png) -->
-![](Final_Robot_image.png)
+![](Images\Screenshots\Final_Robot_image.png)
 
 ## **Path Planning**
 While the Pure-Pursuit controller is responsible for tracking a given reference 
@@ -99,4 +99,4 @@ downstream use by the Pure-Pursuit controller. A final validation step ensures
 that no reconstructed path point intersects an obstacle cell.
 
 
-![Path Planning](path_planning.gif)
+![Path Planning](Images\gif\path_planning.gif)
