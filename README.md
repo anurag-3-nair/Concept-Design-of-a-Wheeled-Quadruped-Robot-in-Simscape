@@ -100,3 +100,39 @@ that no reconstructed path point intersects an obstacle cell.
 
 
 ![Path Planning](Images\gif\path_planning.gif)
+
+## **Control & Modeling logic**
+
+The system architecture is divided into two distinct locomotion modes, toggled by a high-level state machine. 
+The gait of the wheel-mode and leg-mode are sperately built in Simscape Multibody.
+
+### 1. Wheel Mode (Driving)
+Designed for high-speed navigation on flat terrain.
+* **Mechanism:** Implements a **"Soft-lock"** strategy where Hip and Knee joints maintain high stiffness to act as a rigid chassis.
+* **Control:** Uses **Pure Pursuit Algorithm** to calculate steering angles and differential wheel velocities based on the planned path.
+
+The Joints felxibility can be controlled by input a cmd to the **Soft-lock** block, so that the robot can squad or stand up while driving.
+
+<p align="center">
+  <img src="Images/gif/pure%20pursuit.gif" width="50%"> 
+  <br>
+  <em>Figure 1: Wheel-mode pure-pursuit demonstration.</em>
+</p>
+
+| **Steering** | **Squad** |
+| :---: | :---: |
+| <img src="Images/gif/steering.gif" width="60%"> | <img src="Images/gif/squad.gif" width="60%"> |
+
+### 2. Leg Mode (Walking)
+Designed for obstacle negotiation and complex terrain.
+* **Mechanism:** Joints are unlocked, and the system switches to **Closed-loop Torque Control**.
+* **Core Challenge:** Tch critical stability issue occurs during the **Rear_Leg-Lifting Phase**.
+  Without active Center of Mass (CoM) compensation, the reduction of the support polygon can lead to static instability.
+
+<div align="center">
+
+| **Walking_Back** | **Walking_Left** |
+| :---: | :---: |
+| <img src="Images/gif/walk_back.gif" width="100%"> | <img src="Images/gif/walk_left.gif" width="100%"> |
+
+</div>
