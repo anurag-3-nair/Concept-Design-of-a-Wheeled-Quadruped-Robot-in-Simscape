@@ -147,8 +147,11 @@ during full obstacle traversal:
   * **Reason:** As shown in the failure cases, lifting a rear leg significantly reduces the **Support Polygon**. Without active CoM shifting or ZMP feedback, the robot loses static balance and tips over.
   * **Future Work:** Plan to implement a closed loop balance controller with IMU feedback to adjust the CoM before lifting rear legs.
 
-<p align="center">
-  <img src="Images/gif/front_leg_climbing.gif" width="30%"> 
-  <br>
-  <em>Climbing front leg lifting.</em>
-</p>
+<div align="center">
+    
+| **Front Leg Lifting** | **Rear Leg Lifting** |
+| :---: | :---: |
+| <img src="Images/gif/front_leg_climbing.gif" width="60%"> | <img src="Images/gif/rear_leg_fail.gif" width="100%"> |
+| *Succeeded* | *failed* |
+
+</div>
