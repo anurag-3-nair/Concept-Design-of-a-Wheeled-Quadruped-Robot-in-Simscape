@@ -31,7 +31,7 @@ if useRandomObstacles == true
         r = randi([5, 12]);
         BW((X-cx).^2 + (Y-cy).^2 < r^2) = true;
     end
-https://www.mathworks.com/add-ons/AR/
+
 % fixed map
 else
     % rectangles
