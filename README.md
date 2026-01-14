@@ -136,3 +136,19 @@ Designed for obstacle negotiation and complex terrain.
 | <img src="Images/gif/walk_back.gif" width="100%"> | <img src="Images/gif/walk_left.gif" width="100%"> |
 
 </div>
+
+### Current Limitation: Stair Climbing Instability
+
+While the system validates the kinematic feasibility of climbing, it currently faces stability challenges
+during full obstacle traversal:
+
+* **Front Legs (Success):** The robot can successfully lift and place its front legs onto a step, though the motion currently exhibits some oscillation ("bumpy" transition).
+* **Rear Legs (Failure):** The system fails during the **Rear-Leg Lifting Phase**.
+  * **Reason:** As shown in the failure cases, lifting a rear leg significantly reduces the **Support Polygon**. Without active CoM shifting or ZMP feedback, the robot loses static balance and tips over.
+  * **Future Work:** Plan to implement a closed loop balance controller with IMU feedback to adjust the CoM before lifting rear legs.
+
+<p align="center">
+  <img src="Images/gif/front_leg_climbing.gif" width="30%"> 
+  <br>
+  <em>Climbing front leg lifting.</em>
+</p>
