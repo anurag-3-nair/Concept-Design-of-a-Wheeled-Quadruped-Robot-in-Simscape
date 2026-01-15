@@ -121,7 +121,7 @@ Designed for high-speed navigation on flat terrain.
 The Joints felxibility can be controlled by input a cmd to the **Soft-lock** block, so that the robot can squad or stand up while driving.
 
 <p align="center">
-  <img src="Images/gif/pure%20pursuit.gif" width="50%"> 
+  <img src="Images/gif/pure%20pursuit.gif" width="100%"> 
   <br>
   <em>Figure 3: Wheel-mode pure-pursuit demonstration.</em>
 </p>
