@@ -23,8 +23,12 @@ This is the repository for the Software Lab project in 2025!
 5. Mobility
 
 ## **Robot Visualization**
-<!-- ![](Images/Screenshots/sm_qp08_crawl_4legs_soln_mechExp.png) -->
-![](Images\Screenshots\Final_Robot_image.png)
+
+<p align="center">
+  <img src="Images\Screenshots\Final_Robot_image.png" width="65%"> 
+  <br>
+  <em>Figure 1: Final Robot Design.</em>
+</p>
 
 ## **Path Planning**
 While the Pure-Pursuit controller is responsible for tracking a given reference 
@@ -98,8 +102,11 @@ from start to goal. This sequence is then converted into waypoints suitable for
 downstream use by the Pure-Pursuit controller. A final validation step ensures
 that no reconstructed path point intersects an obstacle cell.
 
-
-![Path Planning](Images\gif\path_planning.gif)
+<p align="center">
+  <img src="Images\gif\path_planning.gif" width="100%"> 
+  <br>
+  <em>Figure 2: Path Planning in Action.</em>
+</p>
 
 ## **Control & Modeling logic**
 
@@ -116,7 +123,7 @@ The Joints felxibility can be controlled by input a cmd to the **Soft-lock** blo
 <p align="center">
   <img src="Images/gif/pure%20pursuit.gif" width="50%"> 
   <br>
-  <em>Figure 1: Wheel-mode pure-pursuit demonstration.</em>
+  <em>Figure 3: Wheel-mode pure-pursuit demonstration.</em>
 </p>
 
 | **Steering** | **Squad** |
