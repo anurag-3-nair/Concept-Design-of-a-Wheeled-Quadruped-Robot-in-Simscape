@@ -30,7 +30,7 @@ This is the repository for the Software Lab project in 2025!
 While the Pure-Pursuit controller is responsible for tracking a given reference 
 trajectory, it does not generate the trajectory itself. Therefore, a dedicated
 path-planning algorithm is essential for computing an optimal, collision-free path 
-from a start to a target within the environment. 
+from a start to a target within the environment.
 
 ### **Environment Representation and Map Scaling**
 The environment is represented using a **2D occupancy grid**, 
