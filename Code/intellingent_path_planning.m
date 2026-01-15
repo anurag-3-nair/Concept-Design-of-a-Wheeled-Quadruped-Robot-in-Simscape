@@ -1,4 +1,4 @@
-%% Step 2: Intelligent Path Planning with PRM
+%% First attempt on Intelligent Path Planning with PRM
 
 % Define start and goal positions
 start = [1, 1];    % Start position
