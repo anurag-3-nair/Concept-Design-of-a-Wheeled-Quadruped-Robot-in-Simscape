@@ -22,6 +22,50 @@ This is the repository for the Software Lab project in 2025!
 4. Surveillance
 5. Mobility
 
+## **System Overview**
+
+The robot consists of four main mechanical components:
+- **Chassis** – Central load-bearing structure
+- **Thigh (Upper leg)**
+- **Lower leg (Shank)**
+- **Wheel** – End effector for rolling locomotion
+
+The robot is designed with the following dimensions:
+- Length: **1.1 m**
+- Width: **0.3–0.4 m**
+- Height:
+  - Sitting: **~0.1 m**
+  - Fully standing: **~0.7 m**
+
+The project follows a progressive and parallel development approach:
+
+1. **Conceptual Modeling (MATLAB)**
+   - Simple cuboid and cylinder representations
+   - Basic control logic for omni-directional movement
+   - Initial obstacle traversal testing
+
+2. **Mechanical Design (SolidWorks)**
+   - Detailed CAD model including joints, actuators, and wheel integration
+   - Design based on load distribution, center of mass, and stability calculations
+
+3. **Path Generation**
+   - Creation of a 2D obstacle map representing emergency environments
+   - Generation of collision-free paths using a planning algorithm
+
+4. **Path Tracking**
+   - Implementation of a **Pure Pursuit** controller for smooth trajectory following
+
+5. **Integration & Validation**
+   - Combined testing of locomotion, control, and navigation in simulation
+
+## **Mechanical Design Highlights**
+
+- Payload capacity: **10 kg**
+- Equal load distribution across all four legs
+- Optimized leg geometry for stability and workspace
+- Wheel diameter selected based on obstacle clearance requirements
+- Static stability ensured via center-of-mass and support polygon analysis
+
 ## **Robot Visualization**
 
 <p align="center">
