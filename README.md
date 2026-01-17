@@ -22,6 +22,30 @@ This is the repository for the Software Lab project in 2025!
 4. Surveillance
 5. Mobility
 
+## 🛠️ Tutorial: How to Run
+
+Follow these steps to set up the environment and run the simulations.
+
+### 1. Installation
+Clone this repository to your local machine
+
+### 2. Project Initialization
+1.  Launch **MATLAB**.
+2.  Navigate to the cloned repository folder and double-click to open `Quadruped_Robot.prj`.
+    * *Note:* This action will automatically configure the project path and dependencies.
+    * **Auto-Generation:** The script `path_gen.m` runs automatically as a project startup callback. You should see the generated **Waypoints** and **Parameters** loaded into your MATLAB Workspace immediately.
+
+### 3. Select Simulation Mode
+Navigate to the model directory: `model` -> `final`. You will find two main Simulink models corresponding to the different verification stages:
+
+* **🅰️ Navigation Mode (Wheel-Mode):**
+    * Open the Pure Pursuit model (e.g., `Final_Leg_PurePursuit_Squat_Climb.slx`).
+    * Click **Run**. The robot will track the path generated in Step 2 using the Soft-lock mechanism and Ackermann steering logic.
+
+* **🅱️ Locomotion Mode (Leg-Mode):**
+    * Open the Walking Gait model (e.g., `Final_Leg_Walk_V1.slx`).
+    * Click **Run**. The robot will execute the discrete stepping sequence using the closed-loop joint controller.
+
 ## **System Overview**
 
 The robot consists of four main mechanical components:
@@ -198,11 +222,8 @@ during full obstacle traversal:
   * **Reason:** As shown in the failure cases, lifting a rear leg significantly reduces the **Support Polygon**. Without active CoM shifting or ZMP feedback, the robot loses static balance and tips over.
   * **Future Work:** Plan to implement a closed loop balance controller with IMU feedback to adjust the CoM before lifting rear legs.
 
-<div align="center">
-    
-| **Front Leg Lifting** | **Rear Leg Lifting** |
-| :---: | :---: |
-| <img src="Images/gif/front_leg_climbing.gif" width="60%"> | <img src="Images/gif/rear_leg_fail.gif" width="100%"> |
-| *Succeeded* | *failed* |
-
-</div>
+<p align="center">
+  <img src="Images/gif/front_leg_climbing.gif" width="70%"> 
+  <br>
+  <em>Figure 4: Front leg climbing.</em>
+</p>
