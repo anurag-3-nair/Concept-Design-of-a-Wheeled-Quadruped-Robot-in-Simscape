@@ -38,3 +38,5 @@ resources/project/**/*.xml
 !resources/project/Project.xml
 !resources/project/Root.xml
 !resources/project/rootp.xml
+
+environmentData.mat
