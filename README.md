@@ -1,5 +1,6 @@
 # **Wheeled Quadruped Robot Concept Design in Simscape&trade;**
-This is the repository for the Software Lab project in 2025!
+Early and refined designs of a wheeled quadruped robot with driving, walking, squatting, and climbing modes using MATLAB®
+and Simscape&trade;.
 
 ## **Engineers and Authors**
 1. Hongyu Jiang
