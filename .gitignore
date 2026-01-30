@@ -33,7 +33,7 @@ codegen/
 .MATLABDriveTag
 
 
-resources/project/**/*.xml
+# resources/project/**/*.xml
 
 !resources/project/Project.xml
 !resources/project/Root.xml

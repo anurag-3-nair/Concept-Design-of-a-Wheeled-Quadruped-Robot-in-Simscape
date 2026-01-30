@@ -261,5 +261,3 @@ else
     h = msgbox('Sorry, No path exists to the Target!','warn');
     uiwait(h,5);
 end
-
-save('environmentData.mat', 'map_inflated', 'waypoints', 'scale');
