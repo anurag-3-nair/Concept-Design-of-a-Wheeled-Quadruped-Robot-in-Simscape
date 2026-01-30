@@ -1,4 +1,4 @@
-# **Wheeled Quadruped Robot Concept Design in Simscape&trade;**
+# **Concept Design of a Wheeled Quadruped Robot in Simscape&trade;**
 Early and refined designs of a wheeled quadruped robot with driving, walking, squatting, and climbing modes using MATLAB®
 and Simscape&trade;.
 
