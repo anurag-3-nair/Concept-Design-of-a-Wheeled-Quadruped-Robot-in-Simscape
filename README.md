@@ -94,7 +94,7 @@ The project follows a progressive and parallel development approach:
 ## **Robot Visualization**
 
 <p align="center">
-  <img src="Images\Screenshots\Final_Robot_image.png" width="65%"> 
+  <img src="Images\Screenshots\Final_Robot_image.png" width="45%"> 
   <br>
   <em>Figure 1: Final Robot Design.</em>
 </p>
@@ -172,7 +172,7 @@ downstream use by the Pure-Pursuit controller. A final validation step ensures
 that no reconstructed path point intersects an obstacle cell.
 
 <p align="center">
-  <img src="Images\gif\path_planning.gif" width="100%"> 
+  <img src="Images\gif\path_planning.gif" width="60%"> 
   <br>
   <em>Figure 2: Path Planning in Action.</em>
 </p>
@@ -224,7 +224,7 @@ during full obstacle traversal:
   * **Future Work:** Plan to implement a closed loop balance controller with IMU feedback to adjust the CoM before lifting rear legs.
 
 <p align="center">
-  <img src="Images/gif/front_leg_climbing.gif" width="70%"> 
+  <img src="Images/gif/front_leg_climbing.gif" width="65%"> 
   <br>
   <em>Figure 4: Front leg climbing.</em>
 </p>
