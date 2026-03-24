@@ -34,15 +34,15 @@ if useRandomObstacles == true
 
 % fixed map
 else
-    % rectangles
-    BW(Y>20 & Y<35 & X>15 & X<45) = true;
-    BW(Y>55 & Y<75 & X>30 & X<55) = true;
-    BW(Y>20 & Y<40 & X>65 & X<85) = true;
+    % rectangles 
+    BW(Y>20 & Y<35 & X>15 & X<40) = true;   % was X<45
+    BW(Y>58 & Y<75 & X>32 & X<55) = true;   % was X>30, slight shift
+    BW(Y>20 & Y<40 & X>65 & X<85) = true;   % unchanged
 
-    % circles
-    BW((X-30).^2 + (Y-75).^2 < 12^2) = true;
-    BW((X-70).^2 + (Y-60).^2 < 10^2) = true;
-    BW((X-50).^2 + (Y-25).^2 < 10^2) = true;    
+    % circles 
+    BW((X-30).^2 + (Y-75).^2 < 9^2) = true;  % was 12^2, reduced
+    BW((X-70).^2 + (Y-60).^2 < 9^2) = true;  % was 10^2, reduced  
+    BW((X-50).^2 + (Y-25).^2 < 9^2) = true;  % was 10^2, reduced
 end
 
 % defining a start and a goal
@@ -50,7 +50,7 @@ xStart = 5; yStart= 5;
 xTarget = 95; yTarget = 95;
 
 % obstacles
-robot_radius = 1;
+robot_radius = 8; % between 5-10 is ideal
 se = strel('disk', robot_radius);
 map_inflated = imdilate(BW, se);
 
@@ -65,7 +65,10 @@ MAP(xTarget, yTarget) = 0;
 
 % map plot
 figure('Position', [100 100 900 800]);
-imshow(~map_inflated, 'InitialMagnification','fit');
+display_map = ones(MAX_X, MAX_Y);       % white = free space
+display_map(map_inflated) = 0.6;        % grey = inflation/safety margin
+display_map(BW) = 0;                    % black = actual obstacle
+imshow(display_map, 'InitialMagnification', 'fit');
 hold on;
 axis([1 MAX_X+1 1 MAX_Y+1]);
 axis on; grid on; 
@@ -235,3 +238,24 @@ else
     h=msgbox('Sorry, No path exists to the Target!','warn');
     uiwait(h,5);
 end
+
+%% Creates waypoints for pure-pursuit (needs to be uncommented as otherwise it creates a .csv file for every run)
+
+% if path_valid
+% 
+%     % flipping path so it goes start -> goal
+%     waypoints = flipud(Optimal_path);
+% 
+%     % Column 1 = X (along map columns), Column 2 = Y (along map rows)
+%     % Adjust if your pure pursuit controller expects metric units
+%     scale = 1.0; 
+%     waypoints_x = waypoints(:, 2) * scale;  % col -> X
+%     waypoints_y = waypoints(:, 1) * scale;  % row -> Y
+% 
+%     % export as matrix
+%     waypoints_export = [waypoints_x, waypoints_y];
+% 
+%     % saving the file for pure-pursuit
+%     writematrix(waypoints_export, 'waypoints.csv');
+%     fprintf('Waypoints exported: %d points\n', size(waypoints_export, 1));
+% end
