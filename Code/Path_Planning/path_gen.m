@@ -5,53 +5,63 @@ MAX_X = 100;
 MAX_Y = 100;
 MAP = 2 * (ones(MAX_X, MAX_Y));
 
+% adjusts obstacle size and safety buffer together
+% 1.0 = original sizes, 0.7 = smaller obstacles + tighter buffer
+scale_factor = 0.8;  % tune between 0.6 and 1.2
+
 % TOGGLE: true = random obstacle generation, false = fixed map
 useRandomObstacles = false;
 
 % synthetic obstacles
-numRects = 6; % rectangles
-numCircs = 6; % circles
+numRects = 6;
+numCircs = 6;
 [X, Y] = meshgrid(1:MAX_Y, 1:MAX_X);
 BW = false(size(X));
 
 if useRandomObstacles == true
-    % random obstacle placement
-    % rectangles
     for i = 1:numRects
         x1 = randi([5, MAX_X-25]);
         y1 = randi([5, MAX_Y-25]);
-        w  = randi([8, 20]);
-        h  = randi([8, 20]);
+        w  = round(randi([8,  20]) * scale_factor);
+        h  = round(randi([8,  20]) * scale_factor);
         BW(Y > y1 & Y < y1+h & X > x1 & X < x1+w) = true;
     end
-    % circles
     for i = 1:numCircs
         cx = randi([10, MAX_X-10]);
         cy = randi([10, MAX_Y-10]);
-        r  = randi([5, 12]);
+        r  = round(randi([5, 12]) * scale_factor);
         BW((X-cx).^2 + (Y-cy).^2 < r^2) = true;
     end
 
-% fixed map
 else
+    % fixed obstacle centres
     % rectangles
-    BW(Y>20 & Y<35 & X>15 & X<40) = true;
-    BW(Y>58 & Y<75 & X>32 & X<55) = true;
-    BW(Y>20 & Y<40 & X>65 & X<85) = true;
+    cx1=27; cy1=27; hw1=round(12*scale_factor); hh1=round(7*scale_factor);
+    BW(Y>cy1-hh1 & Y<cy1+hh1 & X>cx1-hw1 & X<cx1+hw1) = true;
+
+    cx2=43; cy2=66; hw2=round(11*scale_factor); hh2=round(8*scale_factor);
+    BW(Y>cy2-hh2 & Y<cy2+hh2 & X>cx2-hw2 & X<cx2+hw2) = true;
+
+    cx3=75; cy3=30; hw3=round(10*scale_factor); hh3=round(10*scale_factor);
+    BW(Y>cy3-hh3 & Y<cy3+hh3 & X>cx3-hw3 & X<cx3+hw3) = true;
 
     % circles
-    BW((X-30).^2 + (Y-75).^2 < 9^2) = true;
-    BW((X-70).^2 + (Y-60).^2 < 9^2) = true;
-    BW((X-50).^2 + (Y-25).^2 < 9^2) = true;
+    BW((X-30).^2 + (Y-75).^2 < (round(9*scale_factor))^2) = true;
+    BW((X-70).^2 + (Y-60).^2 < (round(9*scale_factor))^2) = true;
+    BW((X-50).^2 + (Y-25).^2 < (round(9*scale_factor))^2) = true;
 end
 
 % defining start and goal
 xStart  = 5;  yStart  = 5;
 xTarget = 95; yTarget = 95;
 
-% robot footprint inflation — increase for more clearance (5-10 recommended)
-robot_radius = 8;
-se = strel('disk', robot_radius);
+% robot safety buffer — also scales with scale_factor
+% base_radius is the "true" robot footprint at scale 1.0
+base_radius  = 6;
+robot_radius = round(base_radius * scale_factor);
+robot_radius = max(robot_radius, 2);   % never drop below 2
+
+se           = strel('disk', robot_radius);
 map_inflated = imdilate(BW, se);
 
 % ensure start and target are never blocked
@@ -63,11 +73,11 @@ MAP(map_inflated) = -1;
 MAP(xStart,  yStart)  = 1;
 MAP(xTarget, yTarget) = 0;
 
-% map plot — three-tone: black = obstacle, grey = safety margin, white = free
+% map plot: black = obstacle, grey = safety margin, white = free
 figure('Position', [100 100 900 800]);
 display_map = ones(MAX_X, MAX_Y);
-display_map(map_inflated) = 0.6;   % grey = inflation/safety margin
-display_map(BW)           = 0;     % black = actual obstacle
+display_map(map_inflated) = 0.6;
+display_map(BW)           = 0;
 imshow(display_map, 'InitialMagnification', 'fit');
 hold on;
 axis([1 MAX_X+1 1 MAX_Y+1]);
@@ -79,7 +89,8 @@ plot(yTarget, xTarget, 'gd', 'MarkerSize', 8, 'LineWidth', 2);
 text(yTarget+2, xTarget, 'Target', 'Color', 'green');
 
 set(gca, 'YDir', 'normal');
-title("Synthetic Obstacle Map - Computing the path ...");
+title(sprintf('Obstacle Map  |  scale = %.1f  |  buffer = %d cells  —  Computing ...', ...
+      scale_factor, robot_radius));
 drawnow;
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -91,7 +102,6 @@ CLOSED = [];
 maxIterations  = 2e5;
 iterationCount = 0;
 
-% pre-populate CLOSED with all obstacle cells
 k = 1;
 for i = 1:MAX_X
     for j = 1:MAX_Y
@@ -104,7 +114,6 @@ for i = 1:MAX_X
 end
 CLOSED_COUNT = size(CLOSED, 1);
 
-% set starting node
 xNode     = xStart;
 yNode     = yStart;
 OPEN_COUNT = 1;
@@ -134,7 +143,6 @@ while (xNode ~= xTarget || yNode ~= yTarget) && NoPath == 1
         break;
     end
 
-    % update OPEN with successor nodes
     for i = 1:exp_count
         flag = 0;
         for j = 1:OPEN_COUNT
@@ -156,7 +164,6 @@ while (xNode ~= xTarget || yNode ~= yTarget) && NoPath == 1
         end
     end
 
-    % pick node with smallest f(n)
     index_min_node = min_fn(OPEN, OPEN_COUNT, xTarget, yTarget);
     if index_min_node ~= -1
         xNode     = OPEN(index_min_node, 2);
@@ -178,7 +185,6 @@ end
 
 if xNode == xTarget && yNode == yTarget
 
-    % backtrack from goal to start via parent pointers
     Optimal_path = [];
     xval = CLOSED(end, 1);
     yval = CLOSED(end, 2);
@@ -199,12 +205,10 @@ if xNode == xTarget && yNode == yTarget
         i = i + 1;
     end
 
-    % append start node then reverse so path runs Start → Goal
     Optimal_path(i,1) = xStart;
     Optimal_path(i,2) = yStart;
     Optimal_path = flipud(Optimal_path);
 
-    % path validation
     path_valid = true;
     for idx = 1:size(Optimal_path,1)
         if MAP(Optimal_path(idx,1), Optimal_path(idx,2)) == -1
@@ -217,30 +221,23 @@ if xNode == xTarget && yNode == yTarget
         fprintf('Path validation: PASS\n');
     end
 
-    % -----------------------------------------------------------------------
-    % Waypoint generation for pure pursuit (in-workspace, no CSV)
-    % -----------------------------------------------------------------------
+    % waypoint generation for pure pursuit 
     cellSize = 1.0;
     originX  = 0.0;
     originY  = 0.0;
 
-    % convert grid (row, col) → world (x, y)
     xWorld = originX + (Optimal_path(:,2) - 0.5) * cellSize;
     yWorld = originY + (Optimal_path(:,1) - 0.5) * cellSize;
 
-    % smooth and resample at uniform spacing for pure pursuit
     t         = cumsum([0; sqrt(diff(xWorld).^2 + diff(yWorld).^2)]);
-    t_uniform = (0 : 1.0 : t(end))';          % 1-cell spacing;
+    t_uniform = (0 : 1.0 : t(end))';
     xWP       = interp1(t, xWorld, t_uniform);
     yWP       = interp1(t, yWorld, t_uniform);
 
-    % waypoints matrix 
     waypoints = [xWP, yWP];
     fprintf('Waypoints generated: %d points\n', size(waypoints, 1));
 
-    % -----------------------------------------------------------------------
-    % Animated path + final plot
-    % -----------------------------------------------------------------------
+    % animated final path plot
     j = size(Optimal_path, 1);
     p = plot(Optimal_path(1,2)+.5, Optimal_path(1,1)+.5, 'bo', 'MarkerSize', 8, 'LineWidth', 2);
 
@@ -251,7 +248,8 @@ if xNode == xTarget && yNode == yTarget
     end
 
     plot(Optimal_path(:,2)+.5, Optimal_path(:,1)+.5, 'c-', 'LineWidth', 2.5);
-    title("Synthetic Obstacle Map - Path Found");
+    title(sprintf('Path Found  |  scale = %.1f  |  buffer = %d cells  |  %d waypoints', ...
+          scale_factor, robot_radius, size(waypoints,1)));
 
 else
     pause(1);
