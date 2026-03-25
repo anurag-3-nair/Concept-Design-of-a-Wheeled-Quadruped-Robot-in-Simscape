@@ -222,7 +222,7 @@ if xNode == xTarget && yNode == yTarget
     end
 
     % waypoint generation for pure pursuit 
-    cellSize = 1.0;
+    cellSize = 0.5;
     originX  = 0.0;
     originY  = 0.0;
 
@@ -521,3 +521,20 @@ end
 %     h = msgbox('Sorry, No path exists to the Target!','warn');
 %     uiwait(h,5);
 % end
+obstacle_height = 2; % obstacle height 2 m
+% convert logical matrix BW into height matrix Z
+% 1 (obstacle) -> 2m, 0 (flat) -> 0m
+Z1 = double(BW) * obstacle_height;
+
+extra_flat_width = 10;
+Z2 = zeros(MAX_X, extra_flat_width);
+
+extra_gravel_width = 50;
+Z3 = 0.05 * randn(MAX_X, extra_gravel_width); % random noise
+
+Z_final_mat = [Z1, Z2, Z3];
+
+[rows, cols] = size(Z_final_mat);
+x_total = (0 : cols-1) * cellSize;
+y_total = (0 : rows-1) * cellSize;
+Z_final = Z_final_mat;
