@@ -526,10 +526,10 @@ obstacle_height = 2; % obstacle height 2 m
 % 1 (obstacle) -> 2m, 0 (flat) -> 0m
 Z1 = double(BW) * obstacle_height;
 
-extra_flat_width = 10;
+extra_flat_width = 11;
 Z2 = zeros(MAX_X, extra_flat_width);
 
-extra_gravel_width = 4;
+extra_gravel_width = 2;
 Z3 = 0.02 * randn(MAX_X, extra_gravel_width); % random noise
 
 extra_flat_width_1 = 20;
