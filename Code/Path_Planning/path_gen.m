@@ -530,6 +530,7 @@ extra_flat_width = 11;
 Z2 = zeros(MAX_X, extra_flat_width);
 
 extra_gravel_width = 2;
+rng(81);
 Z3 = 0.02 * randn(MAX_X, extra_gravel_width); % random noise
 
 extra_flat_width_1 = 20;
